@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mysql://nqa.io:3306/library
+    username: library
+    password: A55!gnment
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+server:
+  address: 0.0.0.0
+  port: 8080
