@@ -24,7 +24,7 @@ public class BookService {
     }
 
     public BookDTO getBook(UUID bookId) {
-        Book book = bookRepository.getOne(bookId);
+        Book book = bookRepository.getById(bookId);
         return ModelMapperFactory.getMapper().map(book, BookDTO.class);
     }
 
