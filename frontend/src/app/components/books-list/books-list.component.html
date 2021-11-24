@@ -2,11 +2,39 @@
   <mat-card>
     <mat-card-title>Books</mat-card-title>
     <mat-card-content>
-      <mat-nav-list *ngIf="(books$ | async) as books">
-        <a mat-list-item *ngFor="let book of books.content" [routerLink]="['/books', book.id]">
-          {{book.title}}
-        </a>
-      </mat-nav-list>
+      <mat-table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortBooks($event)">
+
+        // Title
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="title">Title</mat-header-cell>
+          <mat-cell *matCellDef="let book">{{book.title}}</mat-cell>
+        </ng-container>
+
+        // Author
+        <ng-container matColumnDef="author">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="author">Author</mat-header-cell>
+          <mat-cell *matCellDef="let book">{{book.author}}</mat-cell>
+        </ng-container>
+
+        // Year
+        <ng-container matColumnDef="year">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="year">Year</mat-header-cell>
+          <mat-cell *matCellDef="let book">{{book.year}}</mat-cell>
+        </ng-container>
+
+        // Genre
+        <ng-container matColumnDef="genre">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="genre">Genre</mat-header-cell>
+          <mat-cell *matCellDef="let book">{{book.genre}}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let book; columns: displayedColumns"></mat-row>
+      </mat-table>
+
+      <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"
+                     showFirstLastButtons
+                     aria-label="Select page"></mat-paginator>
     </mat-card-content>
   </mat-card>
 </div>
