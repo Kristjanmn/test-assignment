@@ -3,7 +3,7 @@ import { BookStatus } from './book-status';
 
 export interface Book {
   id: string;
-  name: string;
+  title: string;
   author: string;
   genre: string;
   year: number;
