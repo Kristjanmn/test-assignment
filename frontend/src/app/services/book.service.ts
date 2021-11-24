@@ -18,13 +18,13 @@ export class BookService {
   ) {
   }
 
-  getBooks(filter: Partial<PageRequest>): Observable<Page<Book> | Error> {
+  getBooks(filter: Partial<PageRequest>): Observable<Page<Book>> {
     const url = this.baseUrl + '/getBooks';
     const params = RestUtil.buildParamsFromPageRequest(filter);
     return this.http.get<Page<Book>>(url, {params});
   }
 
-  getBook(bookId: string): Observable<Book | Error> {
+  getBook(bookId: string): Observable<Book> {
     const url = this.baseUrl + '/getBook';
     const params = new HttpParams().set('bookId', bookId);
     return this.http.get<Book>(url, {params});
