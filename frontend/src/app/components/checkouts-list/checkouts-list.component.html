@@ -5,9 +5,9 @@
       <mat-table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortCheckouts($event)">
 
         // Borrowed book's title
-        <ng-container matColumnDef="title">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="title">Title</mat-header-cell>
-          <mat-cell *matCellDef="let checkout">{{checkout.title}}</mat-cell>
+        <ng-container matColumnDef="bookTitle">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="bookTitle">Book's title</mat-header-cell>
+          <mat-cell *matCellDef="let checkout">{{checkout.borrowedBook.title}}</mat-cell>
         </ng-container>
 
         // Borrower's first name

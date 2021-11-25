@@ -13,16 +13,15 @@ export class CheckoutsListComponent implements OnInit {
   allCheckouts: Checkout[];
   sortedCheckouts: Checkout[];
   dataSource: MatTableDataSource<Checkout>;
-  displayedColumns: string[] = ["title", "firstName", "lastName"];
+  displayedColumns: string[] = ["bookTitle", "firstName", "lastName"];
 
   // sorting
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private checkoutService: CheckoutService,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     // TODO this observable should emit books taking into consideration pagination, sorting and filtering options.
@@ -57,7 +56,7 @@ export class CheckoutsListComponent implements OnInit {
       switch (sort.active) {
         default:
           return 0;
-        case 'title':
+        case 'bookTitle':
           return this.compare(a.borrowedBook.title, b.borrowedBook.title, isAsc);
         case 'firstName':
           return this.compare(a.borrowerFirstName, b.borrowerFirstName, isAsc);
