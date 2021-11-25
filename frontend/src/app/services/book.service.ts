@@ -14,9 +14,8 @@ export class BookService {
   private readonly baseUrl = environment.backendUrl + '/api/book';
 
   constructor(
-    private http: HttpClient,
-  ) {
-  }
+    private http: HttpClient
+  ) {}
 
   getBooks(filter: Partial<PageRequest>): Observable<Page<Book>> {
     const url = this.baseUrl + '/getBooks';

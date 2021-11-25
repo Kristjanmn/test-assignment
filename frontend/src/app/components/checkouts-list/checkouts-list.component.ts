@@ -16,12 +16,13 @@ export class CheckoutsListComponent implements OnInit {
   displayedColumns: string[] = ["bookTitle", "firstName", "lastName"];
 
   // sorting
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private checkoutService: CheckoutService,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     // TODO this observable should emit books taking into consideration pagination, sorting and filtering options.

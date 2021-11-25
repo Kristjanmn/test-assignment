@@ -1,4 +1,22 @@
 <div class="container mat-elevation-z4">
+
+  <mat-form-field appearance="fill">
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="filterTitle" (keyup)="applyFilter()" placeholder="Title" type="text">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Author</mat-label>
+    <input matInput [(ngModel)]="filterAuthor" (keyup)="applyFilter()" placeholder="Author" type="text">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Year from</mat-label>
+    <input matInput [(ngModel)]="filterYearMin" (keyup)="applyFilter()" placeholder="Min year" type="number">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Year to</mat-label>
+    <input matInput [(ngModel)]="filterYearMax" (keyup)="applyFilter()" placeholder="Max year" type="number">
+  </mat-form-field>
+
   <mat-card>
     <mat-card-title>Books</mat-card-title>
     <mat-card-content>
@@ -29,7 +47,9 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let book; columns: displayedColumns"></mat-row>
+        <mat-row *matRowDef="let book; columns: displayedColumns; let i = index"
+                 [class.selected]="i == selectedIndex"
+                 (click)="setSelected(book, i)"></mat-row>
       </mat-table>
 
       <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"
@@ -38,4 +58,3 @@
     </mat-card-content>
   </mat-card>
 </div>
-
