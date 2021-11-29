@@ -2,20 +2,27 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Title</mat-label>
-    <input matInput [(ngModel)]="filterTitle" (keyup)="applyFilter()" placeholder="Title" type="text">
+    <input matInput [(ngModel)]="filterTitle" (keyup)="applyFilter()" type="text">
   </mat-form-field>
   <mat-form-field appearance="fill">
     <mat-label>Author</mat-label>
-    <input matInput [(ngModel)]="filterAuthor" (keyup)="applyFilter()" placeholder="Author" type="text">
+    <input matInput [(ngModel)]="filterAuthor" (keyup)="applyFilter()" type="text">
   </mat-form-field>
   <mat-form-field appearance="fill">
-    <mat-label>Year from</mat-label>
-    <input matInput [(ngModel)]="filterYearMin" (keyup)="applyFilter()" placeholder="Min year" type="number">
+    <mat-label>From year</mat-label>
+    <input matInput [(ngModel)]="filterYearMin" (keyup)="applyFilter()" (change)="applyFilter()" type="number" [min]="filterYearMinLimit" [max]="filterYearMaxLimit">
   </mat-form-field>
   <mat-form-field appearance="fill">
-    <mat-label>Year to</mat-label>
-    <input matInput [(ngModel)]="filterYearMax" (keyup)="applyFilter()" placeholder="Max year" type="number">
+    <mat-label>To year</mat-label>
+    <input matInput [(ngModel)]="filterYearMax" (keyup)="applyFilter()" (change)="applyFilter()" type="number" [min]="filterYearMinLimit" [max]="filterYearMaxLimit">
   </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Status</mat-label>
+    <mat-select [(ngModel)]="filterStatus" (selectionChange)="applyFilter()">
+      <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button (click)="resetFilter()">Reset filter</button>
 
   <mat-card>
     <mat-card-title>Books</mat-card-title>
@@ -52,6 +59,7 @@
                  (click)="setSelected(book, i)"></mat-row>
       </mat-table>
 
+      <button mat-raised-button color="accent" style="float: left" (click)="createBook()">Add book</button><-- Only for librarians
       <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"
                      showFirstLastButtons
                      aria-label="Select page"></mat-paginator>

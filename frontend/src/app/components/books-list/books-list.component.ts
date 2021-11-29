@@ -1,10 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { BookService } from '../../services/book.service';
-import { Book } from '../../models/book';
+import {BookService} from '../../services/book.service';
+import {Book} from '../../models/book';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
-import {BookStatus} from "../../models/book-status";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-books-list',
@@ -24,16 +24,20 @@ export class BooksListComponent implements OnInit {
   filterAuthor: string = "";
   filterYearMin: number = 1900;
   filterYearMax: number = 2022;
-  filterStatus: BookStatus = "AVAILABLE";
+  filterStatus: string = 'All';
   filteredBooks: Book[];
+  // Filter limits
+  filterYearMinLimit: number = 1900;
+  filterYearMaxLimit: number = 2022;
+  statusList: string[] = ['All','Available','Borrowed','Returned','Damaged','Processing'];
 
-  // sorting
+  // Sorting
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private bookService: BookService,
-  ) {}
+    private router: Router) {}
 
   ngOnInit(): void {
     // TODO this observable should emit books taking into consideration pagination, sorting and filtering options.
@@ -42,7 +46,6 @@ export class BooksListComponent implements OnInit {
         this.dataSource = new MatTableDataSource<Book>(data.content);
       })*/
     this.getBooks();
-    //this.getBooksByFilter("AVAILABLE");
   }
 
   getBooks(): void {
@@ -56,19 +59,34 @@ export class BooksListComponent implements OnInit {
       }, error => console.error(error));
   }
 
+  createBook(): void {
+    this.bookService.createBook()
+      .subscribe(data => {
+        this.router.navigate(['getBook', data.id]);
+      }, error => console.error(error));
+  }
+
   applyFilter(): void {
-    console.error("update flter");
     this.dataSource.paginator.firstPage();
     this.filteredBooks = [];
     for(let book of this.allBooks) {
-      if(book.title.includes(this.filterTitle) &&
-        book.author.includes(this.filterAuthor) &&
+      if(book.title.toLowerCase().includes(this.filterTitle.toLowerCase()) &&
+        book.author.toLowerCase().includes(this.filterAuthor.toLowerCase()) &&
         ((book.year >= this.filterYearMin) && (book.year <= this.filterYearMax)) &&
-      book.status == this.filterStatus) this.filteredBooks.push(book);
+        (this.filterStatus == "All" || book.status == this.filterStatus.toUpperCase())) this.filteredBooks.push(book);
     }
     this.dataSource = new MatTableDataSource<Book>(this.filteredBooks);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  resetFilter(): void {
+    this.filterTitle = "";
+    this.filterAuthor = "";
+    this.filterYearMin = this.filterYearMinLimit;
+    this.filterYearMax = this.filterYearMaxLimit;
+    this.filterStatus = "All";
+    this.applyFilter();
   }
 
   sortBooks(sort: Sort): void {
@@ -102,7 +120,6 @@ export class BooksListComponent implements OnInit {
   }
 
   setSelected(book: Book, index: number): void {
-
     if(this.selectedBook && this.selectedBook.id == book.id) {
       this.selectedBook = undefined;
       this.selectedIndex = -1;
@@ -110,6 +127,7 @@ export class BooksListComponent implements OnInit {
       this.selectedBook = book;
       this.selectedIndex = index;
     }
+    this.router.navigate(['books', this.selectedBook.id]);
   }
 
 }
