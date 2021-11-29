@@ -27,6 +27,11 @@ public class BookController {
         return ResponseEntity.ok(bookService.getBook(bookId));
     }
 
+    @GetMapping(value = "createBook")
+    public ResponseEntity<BookDTO> createBook() {
+        return ResponseEntity.ok(bookService.createBook());
+    }
+
     @PostMapping(value = "saveBook")
     public ResponseEntity<String> saveBook(@RequestBody BookDTO book) {
         return ResponseEntity.ok(String.valueOf(bookService.saveBook(book)));
