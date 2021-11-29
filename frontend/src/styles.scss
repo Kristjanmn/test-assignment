@@ -15,3 +15,14 @@ mat-row.selected {
 mat-row:hover {
   background-color: lightgray;
 }
+
+// Text
+.unavailable {
+  color: red;
+}
+.available {
+  color: green;
+}
+.overdue {
+  color: orangered;
+}
