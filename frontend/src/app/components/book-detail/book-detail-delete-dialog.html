@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Delete book</h2>
+<mat-dialog-content class="mat-typography">
+  Are you sure you wish to delete this book?
+  This process can't be undone.
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true" cdkFocusInitial>Delete</button>
+</mat-dialog-actions>
