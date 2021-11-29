@@ -1,29 +1,60 @@
 <div class="container mat-elevation-z4">
+
+  <mat-form-field appearance="fill">
+    <mat-label>Book title</mat-label>
+    <input matInput [(ngModel)]="filterBookTitle" (keyup)="applyFilter()" type="text">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="filterName" (keyup)="applyFilter()" type="text">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Status</mat-label>
+    <mat-select [(ngModel)]="filterStatus" (selectionChange)="applyFilter()">
+      <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button (click)="resetFilter()">Reset filter</button>
+
   <mat-card>
     <mat-card-title>Checkouts</mat-card-title>
     <mat-card-content>
       <mat-table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortCheckouts($event)">
 
         // Borrowed book's title
-        <ng-container matColumnDef="bookTitle">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="title">Title</mat-header-cell>
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="borrowedBook">Title</mat-header-cell>
           <mat-cell *matCellDef="let checkout">{{checkout.borrowedBook.title}}</mat-cell>
         </ng-container>
 
         // Borrower's first name
         <ng-container matColumnDef="firstName">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="firstName">First name</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header="borrowerFirstName">First name</mat-header-cell>
           <mat-cell *matCellDef="let checkout">{{checkout.borrowerFirstName}}</mat-cell>
         </ng-container>
 
         // Borrower's first name
         <ng-container matColumnDef="lastName">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="lastName">Last name</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header="borrowerLastName">Last name</mat-header-cell>
           <mat-cell *matCellDef="let checkout">{{checkout.borrowerLastName}}</mat-cell>
         </ng-container>
 
+        // Checkout date
+        <ng-container matColumnDef="checkoutDate">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="checkedOutDate">Checkout date</mat-header-cell>
+          <mat-cell *matCellDef="let checkout">{{checkout.checkedOutDate}}</mat-cell>
+        </ng-container>
+
+        // Due date
+        <ng-container matColumnDef="dueDate">
+          <mat-header-cell *matHeaderCellDef mat-sort-header="dueDate">Due date</mat-header-cell>
+          <mat-cell *matCellDef="let checkout">{{checkout.dueDate}}</mat-cell>
+        </ng-container>
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let checkout; columns: displayedColumns"></mat-row>
+        <mat-row *matRowDef="let checkout; columns: displayedColumns; let i = index"
+                 [class.selected]="i == selectedIndex"
+                 (click)="setSelected(checkout, i)"></mat-row>
       </mat-table>
 
       <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"
