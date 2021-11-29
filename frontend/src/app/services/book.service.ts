@@ -29,6 +29,11 @@ export class BookService {
     return this.http.get<Book>(url, {params});
   }
 
+  createBook(): Observable<Book> {
+    const url = this.baseUrl + '/createBook';
+    return this.http.get<Book>(url);
+  }
+
   saveBook(book: Book): Observable<void | Error> {
     const url = this.baseUrl + '/saveBook';
     return this.http.post<void>(url, book);
