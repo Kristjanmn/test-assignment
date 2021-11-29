@@ -52,6 +52,13 @@ export class CheckoutsListComponent implements OnInit {
         this.dataSource = new MatTableDataSource<Checkout>(this.filteredCheckouts);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        /* https://stackoverflow.com/questions/48891174/angular-material-2-datatable-sorting-with-nested-objects */
+        this.dataSource.sortingDataAccessor = (item, property) => {
+          switch(property) {
+            case 'borrowedBook.title': return item.borrowedBook.title;
+            default: return item[property];
+          }
+        };
       }, error => console.error(error));
   }
 

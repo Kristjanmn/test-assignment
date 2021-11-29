@@ -23,7 +23,7 @@
 
         // Borrowed book's title
         <ng-container matColumnDef="title">
-          <mat-header-cell *matHeaderCellDef mat-sort-header="borrowedBook">Title</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header="borrowedBook.title">Title</mat-header-cell>
           <mat-cell *matCellDef="let checkout">{{checkout.borrowedBook.title}}</mat-cell>
         </ng-container>
 
