@@ -1,1 +1,21 @@
-<pre>{{book$ | async | json}}</pre>
+<div class="container mat-elevation-z4">
+  <mat-card>
+    <mat-card-title>{{book.title}}</mat-card-title>
+    <mat-card-content>
+      Author: {{book.author}}<br>
+      Genre: {{book.genre}}<br>
+      Year: {{book.year}}<br>
+      Added: {{book.added}}<br>
+      Checkouts: {{book.checkOutCount}}<br>
+      Status: <label [class.available]="book.status == 'AVAILABLE'"
+                     [class.unavailable]="book.status != 'AVAILABLE'">{{book.status}}</label><br>
+      Due: {{book.dueDate}}<br>
+      Comment: {{book.comment}}
+    </mat-card-content>
+    <br><br>
+    <button mat-raised-button color="accent" [disabled]="book.status != 'AVAILABLE'">Checkout</button>
+    <button mat-raised-button color="accent" [disabled]="book.status != 'BORROWED'">Return</button>
+    <button mat-raised-button color="accent" style="float: right">Edit</button>
+    <button mat-raised-button color="warn" style="float: right" (click)="openDeleteDialog()">Delete</button>
+  </mat-card>
+</div>
