@@ -2,6 +2,9 @@ import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {Page, PageRequest} from "../models/page";
+import {RestUtil} from "./rest-util";
+import {Checkout} from "../models/checkout";
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +19,10 @@ export class CheckoutService {
   /**
    * Get all checkouts.
    */
-  getCheckouts(): Observable<any> {
-    return this.http.get(this.baseUrl + '/getCheckouts');
+  getCheckouts(filter: Partial<PageRequest>): Observable<Page<Checkout>> {
+    const url = this.baseUrl + '/getCheckouts';
+    const params = RestUtil.buildParamsFromPageRequest(filter);
+    return this.http.get<Page<Checkout>>(url, {params});
   }
 
   /**

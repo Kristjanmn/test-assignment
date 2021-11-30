@@ -58,6 +58,7 @@ public class BookService {
         book.setAdded(LocalDate.now());
         book.setCheckOutCount(0);
         book.setStatus(BookStatus.PROCESSING);
+        bookRepository.save(book);
         return modelMapper.map(book, BookDTO.class);
     }
 

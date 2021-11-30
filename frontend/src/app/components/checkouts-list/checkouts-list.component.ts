@@ -45,7 +45,7 @@ export class CheckoutsListComponent implements OnInit {
   }
 
   getCheckouts(): void {
-    this.checkoutService.getCheckouts()
+    this.checkoutService.getCheckouts({pageSize:999999999})
       .subscribe(data => {
         this.allCheckouts = data.content;
         this.filteredCheckouts = data.content;

@@ -49,7 +49,8 @@ export class BooksListComponent implements OnInit {
   }
 
   getBooks(): void {
-    this.bookService.getBooks({})
+    // This is really STUPID. I have no idea how this works :'(
+    this.bookService.getBooks({ pageSize:999999999})
       .subscribe(data => {
         this.allBooks = data.content;
         this.filteredBooks = data.content;
@@ -62,7 +63,7 @@ export class BooksListComponent implements OnInit {
   createBook(): void {
     this.bookService.createBook()
       .subscribe(data => {
-        this.router.navigate(['getBook', data.id]);
+        this.router.navigate(['books', data.id]);
       }, error => console.error(error));
   }
 
