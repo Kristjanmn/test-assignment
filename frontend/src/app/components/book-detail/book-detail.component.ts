@@ -46,7 +46,6 @@ export class BookDetailComponent implements OnInit {
   openDeleteDialog(): void {
     const dialogRef = this.dialog.open(BookDeleteDialog);
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`${result}`);
       if(result == true) this.delete();
     }, error => console.error(error));
   }
@@ -56,9 +55,8 @@ export class BookDetailComponent implements OnInit {
   }
 
   delete(): void {
-    //TODO: disabled just for testing
-    //this.bookService.deleteBook(this.book.id);
-    this.router.navigate(['/books']);
+    this.bookService.deleteBook(this.book.id)
+      .subscribe(() => this.router.navigate(['/books']));
   }
 
 }

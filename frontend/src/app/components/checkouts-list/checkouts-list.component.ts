@@ -62,10 +62,6 @@ export class CheckoutsListComponent implements OnInit {
       }, error => console.error(error));
   }
 
-  createCheckout(): void {
-    //
-  }
-
   applyFilter(): void {
     this.dataSource.paginator.firstPage();
     this.filteredCheckouts = [];
