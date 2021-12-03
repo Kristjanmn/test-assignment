@@ -30,6 +30,7 @@ export class BooksListComponent implements OnInit {
   filterYearMinLimit: number = 1900;
   filterYearMaxLimit: number = 2050;
   statusList: string[] = ['All','Available','Borrowed','Returned','Damaged','Processing'];
+  favorites: string[] = [];
 
   // Sorting
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -46,6 +47,10 @@ export class BooksListComponent implements OnInit {
         this.dataSource = new MatTableDataSource<Book>(data.content);
       })*/
     this.getBooks();
+    // favorite books
+    if(localStorage.getItem('favoriteBooks')) {
+      this.favorites = JSON.parse(localStorage.getItem('favoriteBooks'));
+    }
   }
 
   getBooks(): void {

@@ -50,7 +50,10 @@ export class BookDetailComponent implements OnInit {
 
   favorite(): void {
     // Toggle book as favorite or not.
-    let favorites = JSON.parse(localStorage.getItem('favoriteBooks'));
+    let favorites = [];
+    if(localStorage.getItem('favoriteBooks')) {
+      favorites = JSON.parse(localStorage.getItem('favoriteBooks'));
+    }
     let index = favorites.indexOf(this.book.id);
     if(index > -1) favorites.splice(index, 1);
     else favorites.push(this.book.id);
