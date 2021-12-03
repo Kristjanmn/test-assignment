@@ -11,7 +11,7 @@
                      [class.unavailable]="book.status != 'AVAILABLE'">{{book.status}}</label><br>
       Due: {{book.dueDate}}<br>
       Comment: {{book.comment}}<br><br>
-      <button mat-raised-button class="favorite" (click)="favorite()"><label [hidden]="isFavorite">Remove favorite </label><mat-icon [hidden]="isFavorite">favorite</mat-icon><label [hidden]="!isFavorite">Add favorite </label><mat-icon [hidden]="!isFavorite">favorite_border</mat-icon></button>
+      <button mat-raised-button class="favorite" (click)="favorite()"><label [hidden]="!isFavorite">Remove favorite </label><mat-icon [hidden]="!isFavorite">favorite</mat-icon><label [hidden]="isFavorite">Add favorite </label><mat-icon [hidden]="isFavorite">favorite_border</mat-icon></button>
     </mat-card-content>
     <br><br>
     <button mat-raised-button color="accent" [disabled]="book.status != 'AVAILABLE'" (click)="toBookCheckout()">Checkout</button>
