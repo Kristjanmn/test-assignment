@@ -17,6 +17,8 @@ export class BookDetailComponent implements OnInit {
 
   isAvailable: boolean;
   isLate: boolean;
+  isFavorite: boolean;
+  favorites: string[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -42,6 +44,10 @@ export class BookDetailComponent implements OnInit {
       .subscribe(data => {
         this.book = data;
         if(data.status == 'AVAILABLE') this.isAvailable = true;
+        if(localStorage.getItem('favoriteBooks')) {
+          this.favorites = JSON.parse(localStorage.getItem('favoriteBooks'));
+          if(this.favorites.indexOf(this.book.id) > -1) this.isFavorite = true;
+        }
       }, error => {
         console.error(error);
         if(error.status == 404) this.router.navigate(['books']);
@@ -50,15 +56,15 @@ export class BookDetailComponent implements OnInit {
 
   favorite(): void {
     // Toggle book as favorite or not.
-    let favorites = [];
-    if(localStorage.getItem('favoriteBooks')) {
-      favorites = JSON.parse(localStorage.getItem('favoriteBooks'));
+    let index = this.favorites.indexOf(this.book.id);
+    if(index > -1) {
+      this.favorites.splice(index, 1);
+      this.isFavorite = false;
+    } else {
+      this.favorites.push(this.book.id);
+      this.isFavorite = true;
     }
-    let index = favorites.indexOf(this.book.id);
-    if(index > -1) favorites.splice(index, 1);
-    else favorites.push(this.book.id);
-    localStorage.setItem('favoriteBooks', JSON.stringify(favorites));
-    console.error(favorites.length);
+    localStorage.setItem('favoriteBooks', JSON.stringify(this.favorites));
   }
 
   toBookCheckout(): void {
