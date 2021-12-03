@@ -24,12 +24,19 @@ public class BookController {
 
     @GetMapping(value = "getBook")
     public ResponseEntity<BookDTO> getBook(@RequestParam(value = "bookId") UUID bookId) {
-        return ResponseEntity.ok(bookService.getBook(bookId));
+        BookDTO bookDTO = bookService.getBook(bookId);
+        if(bookDTO == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(bookDTO);
     }
 
     @GetMapping(value = "createBook")
     public ResponseEntity<BookDTO> createBook() {
         return ResponseEntity.ok(bookService.createBook());
+    }
+
+    @PostMapping(value = "returnBook")
+    public ResponseEntity<String> returnBook(@RequestBody BookDTO book) {
+        return ResponseEntity.ok(String.valueOf(bookService.returnBook(book)));
     }
 
     @PostMapping(value = "saveBook")

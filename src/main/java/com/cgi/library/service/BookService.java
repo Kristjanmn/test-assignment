@@ -3,6 +3,7 @@ package com.cgi.library.service;
 import com.cgi.library.entity.Book;
 import com.cgi.library.model.BookDTO;
 import com.cgi.library.model.BookStatus;
+import com.cgi.library.model.CheckOutDTO;
 import com.cgi.library.repository.BookRepository;
 import com.cgi.library.util.ModelMapperFactory;
 import org.modelmapper.ModelMapper;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -19,6 +21,8 @@ public class BookService {
 
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private CheckOutService checkOutService;
 
     /**
      * Get all books.
@@ -38,8 +42,12 @@ public class BookService {
      * @return
      */
     public BookDTO getBook(UUID bookId) {
-        Book book = bookRepository.getById(bookId);
-        return ModelMapperFactory.getMapper().map(book, BookDTO.class);
+        try {
+            Book book = bookRepository.getById(bookId);
+            return ModelMapperFactory.getMapper().map(book, BookDTO.class);
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
     }
 
     /**
@@ -48,8 +56,7 @@ public class BookService {
      * @return
      */
     public BookDTO createBook() {
-        ModelMapper modelMapper = ModelMapperFactory.getMapper();
-        Book book = new Book();
+        BookDTO book = new BookDTO();
         book.setId(UUID.randomUUID());
         book.setTitle("Book's title");
         book.setAuthor("Author's name");
@@ -58,8 +65,21 @@ public class BookService {
         book.setAdded(LocalDate.now());
         book.setCheckOutCount(0);
         book.setStatus(BookStatus.PROCESSING);
-        bookRepository.save(book);
-        return modelMapper.map(book, BookDTO.class);
+        this.saveBook(book);
+        return ModelMapperFactory.getMapper().map(book, BookDTO.class);
+    }
+
+    public UUID returnBook(BookDTO bookDTO) {
+        ModelMapper modelMapper = ModelMapperFactory.getMapper();
+        // Book
+        bookDTO.setStatus(BookStatus.RETURNED);
+        bookDTO.setDueDate(null);
+        saveBook(bookDTO);
+        // Checkout
+        CheckOutDTO checkOut = checkOutService.findCheckOutByBookId(bookDTO.getId());
+        checkOut.setReturnedDate(LocalDate.now());
+        checkOutService.saveCheckOut(checkOut);
+        return bookRepository.save(modelMapper.map(bookDTO, Book.class)).getId();
     }
 
     public UUID saveBook(BookDTO bookDTO) {

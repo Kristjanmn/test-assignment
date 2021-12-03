@@ -9,5 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface CheckOutRepository extends JpaRepository<CheckOut, UUID> {
+    CheckOut findByBorrowedBook_IdAndReturnedDateIsNull(UUID uuid);
 
 }
