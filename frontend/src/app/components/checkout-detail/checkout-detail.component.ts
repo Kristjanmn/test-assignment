@@ -1,15 +1,67 @@
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Component, OnInit} from "@angular/core";
+import {CheckoutService} from "../../services/checkout.service";
+import {MatDialog} from "@angular/material/dialog";
+import {Checkout} from "../../models/checkout";
 
 @Component({
   selector: 'app-checkout-detail',
   templateUrl: './checkout-detail.component.html'
 })
 export class CheckoutDetailComponent implements OnInit {
+  checkout: Checkout;
+  checkoutStatus: CheckoutStatus;
 
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
+    private checkoutService: CheckoutService,
+    private dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.params
+      .subscribe(params => {
+        if(params.id) this.getCheckoutById(params.id);
+      })
+  }
+
+  getCheckoutById(id: string) {
+    this.checkoutService.getCheckout(id)
+      .subscribe(data => {
+        this.checkout = data;
+        // Status
+        if(this.checkout.returnedDate == null ||
+          this.checkout.returnedDate.trim() == "") {
+          if(this.isBookLate()) this.checkoutStatus = CheckoutStatus.LATE;
+          else this.checkoutStatus = CheckoutStatus.BORROWED;
+        } else {
+          if(this.isLateReturn()) this.checkoutStatus = CheckoutStatus.LATERETURN;
+          else this.checkoutStatus = CheckoutStatus.RETURNED;
+        }
+      })
+  }
+
+  toBookDetails(): void {
+    this.router.navigate(['books', this.checkout.borrowedBook.id]);
+  }
+
+  toCheckoutEditing(): void {
+    this.router.navigate(['checkoutedit', this.checkout.id]);
+  }
+
+  isBookLate(): boolean {
+    return this.checkoutService.isBookLate(this.checkout);
+  }
+
+  isLateReturn(): boolean {
+    return this.checkoutService.isLateReturn(this.checkout);
+  }
+}
+
+enum CheckoutStatus {
+  "BORROWED" = "Borrowed",
+  "RETURNED" = "Returned",
+  "LATE" = "Late",
+  "LATERETURN" = "Late return"
 }

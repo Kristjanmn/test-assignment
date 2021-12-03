@@ -54,6 +54,7 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let checkout; columns: displayedColumns; let i = index"
                  [class.selected]="i == selectedIndex"
+                 [class.checkout-list-late]="isLate(checkout.dueDate, checkout.returnedDate)"
                  (click)="setSelected(checkout, i)"></mat-row>
       </mat-table>
 

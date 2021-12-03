@@ -28,7 +28,7 @@ export class BooksListComponent implements OnInit {
   filteredBooks: Book[];
   // Filter limits
   filterYearMinLimit: number = 1900;
-  filterYearMaxLimit: number = 2022;
+  filterYearMaxLimit: number = 2050;
   statusList: string[] = ['All','Available','Borrowed','Returned','Damaged','Processing'];
 
   // Sorting
@@ -63,7 +63,7 @@ export class BooksListComponent implements OnInit {
   createBook(): void {
     this.bookService.createBook()
       .subscribe(data => {
-        this.router.navigate(['books', data.id]);
+        this.router.navigate(['bookedit', data.id]);
       }, error => console.error(error));
   }
 

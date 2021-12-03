@@ -3,6 +3,8 @@ import { BookService } from '../../services/book.service';
 import { Book } from '../../models/book';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from "@angular/material/dialog";
+import {Checkout} from "../../models/checkout";
+import {CheckoutService} from "../../services/checkout.service";
 
 @Component({
   selector: 'app-book-detail',
@@ -11,15 +13,16 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class BookDetailComponent implements OnInit {
   book: Book;
+  checkout: Checkout;
 
   isAvailable: boolean;
   isLate: boolean;
-  localdate
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private bookService: BookService,
+    private checkoutService: CheckoutService,
     private dialog: MatDialog
   ) {}
 
@@ -28,6 +31,8 @@ export class BookDetailComponent implements OnInit {
       .subscribe(params => {
         if(params.id) {
           this.getBookById(params.id)
+          this.checkoutService.getCheckoutByBookId(this.book.id)
+            .subscribe(data => this.checkout = data, error => console.error(error));
         }
       })
   }
@@ -43,6 +48,37 @@ export class BookDetailComponent implements OnInit {
       })
   }
 
+  favorite(): void {
+    // Toggle book as favorite or not.
+    let favorites = JSON.parse(localStorage.getItem('favoriteBooks'));
+    let index = favorites.indexOf(this.book.id);
+    if(index > -1) favorites.splice(index, 1);
+    else favorites.push(this.book.id);
+    localStorage.setItem('favoriteBooks', JSON.stringify(favorites));
+    console.error(favorites.length);
+  }
+
+  toBookCheckout(): void {
+    this.router.navigate(['bookcheckout', this.book.id]);
+  }
+
+  openReturnDialog(): void {
+    const dialogRef = this.dialog.open(BookReturnDialog);
+    dialogRef.afterClosed().subscribe(result => {
+      if(result == true) this.returnBook()
+    })
+  }
+
+  returnBook(): void {
+    this.bookService.returnBook(this.book)
+      .subscribe(data => this.router.navigate(['books', data]));
+  }
+
+  toBookEditing(): void {
+    this.router.navigate(['bookedit', this.book.id]);
+  }
+
+
   openDeleteDialog(): void {
     const dialogRef = this.dialog.open(BookDeleteDialog);
     dialogRef.afterClosed().subscribe(result => {
@@ -50,13 +86,9 @@ export class BookDetailComponent implements OnInit {
     }, error => console.error(error));
   }
 
-  updateBook(): void {
-    this.bookService.saveBook(this.book);
-  }
-
   delete(): void {
     this.bookService.deleteBook(this.book.id)
-      .subscribe(() => this.router.navigate(['/books']));
+      .subscribe(() => this.router.navigate(['books']));
   }
 
 }
@@ -66,3 +98,9 @@ export class BookDetailComponent implements OnInit {
   templateUrl: './book-detail-delete-dialog.html'
 })
 export class BookDeleteDialog {}
+
+@Component({
+  selector: 'book-detail-return-dialog',
+  templateUrl: './book-detail-return-dialog.html'
+})
+export class BookReturnDialog {}

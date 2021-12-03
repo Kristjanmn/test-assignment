@@ -1,0 +1,37 @@
+<div class="container mat-elevation-z4">
+  <mat-card>
+    <mat-card-title>{{book.title}}</mat-card-title>
+    <mat-card-content>
+      <mat-form-field appearance="fill">
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="book.title" type="text" required>
+      </mat-form-field><br>
+      <mat-form-field appearance="fill">
+        <mat-label>Author</mat-label>
+        <input matInput [(ngModel)]="book.author" type="text" required>
+      </mat-form-field><br>
+      <mat-form-field appearance="fill">
+        <mat-label>Genre</mat-label>
+        <input matInput [(ngModel)]="book.genre" type="text" required>
+      </mat-form-field><br>
+      <mat-form-field appearance="fill">
+        <mat-label>Year</mat-label>
+        <input matInput [(ngModel)]="book.year" type="number" required>
+      </mat-form-field><br>
+      <mat-form-field appearance="fill">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="inputStatus" (selectionChange)="applyStatus()">
+          <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
+        </mat-select>
+      </mat-form-field><br>
+      <mat-form-field appearance="fill">
+        <mat-label>Comment</mat-label>
+        <input matInput [(ngModel)]="book.comment" type="text">
+      </mat-form-field><br>
+    </mat-card-content>
+    <br><br>
+    <button mat-raised-button [disabled]="inputStatus == statusList[0]" (click)="toCheckoutDetails()">View checkout</button>
+    <button mat-raised-button color="warn" style="float: right" (click)="openUpdateDialog()">Save</button>
+    <button mat-raised-button color="accent" style="float: right" (click)="toBookDetails()">Back</button>
+  </mat-card>
+</div>

@@ -126,4 +126,11 @@ export class CheckoutsListComponent implements OnInit {
     this.router.navigate(['checkouts', this.selectedCheckout.id])
   }
 
+  isLate(dueDate: string, returnedDate: string): boolean {
+    // Did not work out the way I had planned, so here is a poop workaround.
+    // Maybe i'm just tired, but this seems to work the wrong way around
+    if(returnedDate != null && returnedDate.trim() != "") return false;
+    return new Date() > new Date(dueDate);
+  }
+
 }

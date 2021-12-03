@@ -10,12 +10,13 @@
       Status: <label [class.available]="book.status == 'AVAILABLE'"
                      [class.unavailable]="book.status != 'AVAILABLE'">{{book.status}}</label><br>
       Due: {{book.dueDate}}<br>
-      Comment: {{book.comment}}
+      Comment: {{book.comment}}<br><br>
+      <button mat-raised-button class="favorite" (click)="favorite()">Favorite</button>
     </mat-card-content>
     <br><br>
-    <button mat-raised-button color="accent" [disabled]="book.status != 'AVAILABLE'">Checkout</button>
-    <button mat-raised-button color="accent" [disabled]="book.status != 'BORROWED'">Return</button>
-    <button mat-raised-button color="accent" style="float: right">Edit</button>
+    <button mat-raised-button color="accent" [disabled]="book.status != 'AVAILABLE'" (click)="toBookCheckout()">Checkout</button>
+    <button mat-raised-button color="accent" [disabled]="book.status != 'BORROWED'" (click)="openReturnDialog()">Return</button>
+    <button mat-raised-button color="accent" style="float: right" (click)="toBookEditing()">Edit</button>
     <button mat-raised-button color="warn" style="float: right" (click)="openDeleteDialog()">Delete</button>
   </mat-card>
 </div>
