@@ -1,6 +1,7 @@
 <div class="container mat-elevation-z4">
   <mat-card>
     <mat-card-title>{{book.title}}</mat-card-title>
+    <br>
     <mat-card-content>
       Author: {{book.author}}<br>
       Genre: {{book.genre}}<br>
@@ -11,12 +12,11 @@
                      [class.unavailable]="book.status != 'AVAILABLE'">{{book.status}}</label><br>
       Due: {{book.dueDate}}<br>
       Comment: {{book.comment}}<br><br>
-      <button mat-raised-button class="favorite" (click)="favorite()"><label [hidden]="!isFavorite">Remove favorite </label><mat-icon [hidden]="!isFavorite">favorite</mat-icon><label [hidden]="isFavorite">Add favorite </label><mat-icon [hidden]="isFavorite">favorite_border</mat-icon></button>
     </mat-card-content>
-    <br><br>
-    <button mat-raised-button color="accent" [disabled]="book.status != 'AVAILABLE'" (click)="toBookCheckout()">Checkout</button>
-    <button mat-raised-button color="accent" [disabled]="book.status != 'BORROWED'" (click)="openReturnDialog()">Return</button>
-    <button mat-raised-button color="accent" style="float: right" (click)="toBookEditing()">Edit</button>
-    <button mat-raised-button color="warn" style="float: right" (click)="openDeleteDialog()">Delete</button>
+    <button mat-raised-button color="accent" [disabled]="book.status != 'AVAILABLE'" style="margin: 5px" (click)="toBookCheckout()">Checkout</button>
+    <button mat-raised-button color="accent" [disabled]="book.status != 'BORROWED'" style="margin: 5px" (click)="openReturnDialog()">Return</button>
+    <button mat-raised-button class="favorite" style="margin: 5px" (click)="favorite()"><label [hidden]="!isFavorite">Remove favorite </label><mat-icon [hidden]="!isFavorite">favorite</mat-icon><label [hidden]="isFavorite">Add favorite </label><mat-icon [hidden]="isFavorite">favorite_border</mat-icon></button>
+    <button mat-raised-button color="accent" style="float: right; margin: 5px;" (click)="toBookEditing()">Edit</button>
+    <button mat-raised-button color="warn" style="float: right; margin: 5px;" (click)="openDeleteDialog()">Delete</button>
   </mat-card>
 </div>

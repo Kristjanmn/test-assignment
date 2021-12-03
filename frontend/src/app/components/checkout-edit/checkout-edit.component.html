@@ -28,10 +28,9 @@
         <mat-select [(ngModel)]="status" (selectionChange)="onStatusChanged()">
           <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
         </mat-select>
-      </mat-form-field><br>
+      </mat-form-field>
     </mat-card-content>
-    <br><br>
-    <button mat-raised-button color="warn" style="float: right" (click)="openUpdateDialog()">Save</button>
-    <button mat-raised-button color="accent" style="float: right" (click)="toCheckoutDetails()">Back</button>
+    <button mat-raised-button color="warn" style="margin: 5px" (click)="openUpdateDialog()">Save</button>
+    <button mat-raised-button color="accent" style="margin: 5px" (click)="toCheckoutDetails()">Back</button>
   </mat-card>
 </div>

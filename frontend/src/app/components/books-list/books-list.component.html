@@ -1,28 +1,28 @@
 <div class="container mat-elevation-z4">
 
-  <mat-form-field appearance="fill">
+  <mat-form-field style="margin: 5px;" appearance="fill">
     <mat-label>Title</mat-label>
     <input matInput [(ngModel)]="filterTitle" (keyup)="applyFilter()" type="text">
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <mat-form-field style="margin: 5px;" appearance="fill">
     <mat-label>Author</mat-label>
     <input matInput [(ngModel)]="filterAuthor" (keyup)="applyFilter()" type="text">
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <mat-form-field style="margin: 5px;" appearance="fill">
     <mat-label>From year</mat-label>
     <input matInput [(ngModel)]="filterYearMin" (keyup)="applyFilter()" (change)="applyFilter()" type="number" [min]="filterYearMinLimit" [max]="filterYearMaxLimit">
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <mat-form-field style="margin: 5px;" appearance="fill">
     <mat-label>To year</mat-label>
     <input matInput [(ngModel)]="filterYearMax" (keyup)="applyFilter()" (change)="applyFilter()" type="number" [min]="filterYearMinLimit" [max]="filterYearMaxLimit">
   </mat-form-field>
-  <mat-form-field appearance="fill">
+  <mat-form-field style="margin: 5px;" appearance="fill">
     <mat-label>Status</mat-label>
     <mat-select [(ngModel)]="filterStatus" (selectionChange)="applyFilter()">
       <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-raised-button (click)="resetFilter()">Reset filter</button>
+  <button mat-raised-button style="margin: 5px;" (click)="resetFilter()">Reset filter</button>
 
   <mat-card>
     <mat-card-title>Books</mat-card-title>
@@ -60,7 +60,7 @@
                  (click)="setSelected(book, i)"></mat-row>
       </mat-table>
 
-      <button mat-raised-button color="accent" style="float: left" (click)="createBook()">Add book</button><-- Only for librarians
+      <button mat-raised-button color="accent" style="float: left; margin: 10px" (click)="createBook()">Add book</button>
       <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"
                      showFirstLastButtons
                      aria-label="Select page"></mat-paginator>

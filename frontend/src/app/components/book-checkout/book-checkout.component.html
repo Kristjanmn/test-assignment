@@ -1,6 +1,7 @@
 <div class="container mat-elevation-z4">
   <mat-card>
     <mat-card-title>Checkout {{book.title}} by {{book.author}}</mat-card-title>
+    <br>
     <mat-card-content>
       <mat-form-field appearance="fill">
         <mat-label>First name</mat-label>
@@ -15,8 +16,7 @@
         <input matInput [(ngModel)]="inputDueDate" type="date" required>
       </mat-form-field><br>
     </mat-card-content>
-    <br><br>
-    <button mat-raised-button color="warn" style="float: right" [disabled]="!meetsRequirements" (click)="openCheckoutConfirmDialog()">Checkout</button>
-    <button mat-raised-button color="accent" style="float: right" (click)="toBookDetails()">Back</button>
+    <button mat-raised-button color="warn" style="margin: 5px;" [disabled]="!meetsRequirements" (click)="openCheckoutConfirmDialog()">Checkout</button>
+    <button mat-raised-button color="accent" style="margin: 5px;" (click)="toBookDetails()">Back</button>
   </mat-card>
 </div>
