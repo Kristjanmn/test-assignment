@@ -31,7 +31,12 @@ export class BookService {
 
   createBook(): Observable<Book> {
     const url = this.baseUrl + '/createBook';
-    return this.http.get<Book>(url);
+    return this.http.get<Book>(url);  // This is GET on purpose, backend creates the object.
+  }
+
+  returnBook(book: Book): Observable<void | Error> {
+    const url = this.baseUrl + '/returnBook';
+    return this.http.post<void>(url, book);
   }
 
   saveBook(book: Book): Observable<void | Error> {
