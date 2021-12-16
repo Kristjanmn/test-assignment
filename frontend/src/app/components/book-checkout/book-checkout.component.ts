@@ -10,6 +10,7 @@ import {CheckoutService} from "../../services/checkout.service";
   templateUrl: './book-checkout.component.html'
 })
 export class BookCheckoutComponent implements OnInit {
+  isDataLoaded: Promise<boolean>;
   book: Book;
   inputFirstName: string = "";
   inputLastName: string = "";
@@ -30,17 +31,16 @@ export class BookCheckoutComponent implements OnInit {
         if(params.id) {
           this.getBookById(params.id);
         }
-      })
+      });
   }
 
   getBookById(id: string) {
     this.bookService.getBook(id)
       .subscribe(data => {
         this.book = data;
-      }, error => {
-        console.error(error);
-        if(error.status == 404) this.router.navigate(['books']);
-      })
+        /* https://stackoverflow.com/a/44904470 */
+        this.isDataLoaded = Promise.resolve(true);
+      }, () => this.router.navigate(['books']));
   }
 
   openCheckoutConfirmDialog(): void {
@@ -61,7 +61,8 @@ export class BookCheckoutComponent implements OnInit {
 
   fieldsChanged(): void {
     if (this.inputFirstName.trim() == "" ||
-      this.inputLastName.trim() == "") this.meetsRequirements = false;
+      this.inputLastName.trim() == "" ||
+      this.inputDueDate == null) this.meetsRequirements = false;
     else this.meetsRequirements = true;
   }
 }

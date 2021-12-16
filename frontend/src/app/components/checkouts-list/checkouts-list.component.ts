@@ -104,7 +104,7 @@ export class CheckoutsListComponent implements OnInit {
         case 'lastName':
           return this.compare(a.borrowerLastName, b.borrowerLastName, isAsc);
         case 'checkoutDate':
-          return this.compare(a.checkoutDate, b.checkoutDate, isAsc);
+          return this.compare(a.checkedOutDate, b.checkedOutDate, isAsc);
         case 'dueDate':
           return this.compare(a.dueDate, b.dueDate, isAsc);
       }

@@ -12,6 +12,7 @@ import {CheckoutService} from "../../services/checkout.service";
   styleUrls: ['./book-detail.component.scss']
 })
 export class BookDetailComponent implements OnInit {
+  isDataLoaded: Promise<boolean>;
   book: Book;
   checkout: Checkout;
 
@@ -33,10 +34,8 @@ export class BookDetailComponent implements OnInit {
       .subscribe(params => {
         if(params.id) {
           this.getBookById(params.id)
-          this.checkoutService.getCheckoutByBookId(this.book.id)
-            .subscribe(data => this.checkout = data, error => console.error(error));
         }
-      })
+      });
   }
 
   getBookById(id: string) {
@@ -48,10 +47,15 @@ export class BookDetailComponent implements OnInit {
           this.favorites = JSON.parse(localStorage.getItem('favoriteBooks'));
           if(this.favorites.indexOf(this.book.id) > -1) this.isFavorite = true;
         }
-      }, error => {
-        console.error(error);
-        if(error.status == 404) this.router.navigate(['books']);
-      })
+        if(data.status == 'BORROWED') this.getCheckoutByBookId(data.id);
+        /* https://stackoverflow.com/a/44904470 */
+        this.isDataLoaded = Promise.resolve(true);
+      }, () => this.router.navigate(['books']));
+  }
+
+  getCheckoutByBookId(id: string) {
+    this.checkoutService.getCheckoutByBookId(id)
+      .subscribe(data => this.checkout = data, () => this.router.navigate(['books']));
   }
 
   favorite(): void {

@@ -5,7 +5,7 @@ export interface Checkout {
   borrowerFirstName: string;
   borrowerLastName: string;
   borrowedBook: Book;
-  checkoutDate: string;
+  checkedOutDate: string;
   dueDate: string;
   returnedDate: string;
 }

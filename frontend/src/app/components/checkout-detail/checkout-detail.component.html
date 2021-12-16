@@ -1,4 +1,4 @@
-<div class="container mat-elevation-z4">
+<div class="container mat-elevation-z4" *ngIf="isDataLoaded | async">
   <mat-card>
     <mat-card-title>Checkout {{checkout.id}}</mat-card-title>
     <mat-card-content>
@@ -6,7 +6,7 @@
       Last name: {{checkout.borrowerLastName}}<br>
       Book: <a (click)="toBookDetails()">{{this.checkout.borrowedBook.title}}</a><br>
       Status: <label [class.available]="checkoutStatus.valueOf() == 'RETURNED'" [class.unavailable]="isLateReturn() || isLateReturn()">{{checkoutStatus.valueOf()}}</label><br>
-      Checked out: {{checkout.checkoutDate}}<br><!--This is correct, even tho it demands checkout.checkoutDate.-->
+      Checked out: {{checkout.checkedOutDate}}<br>
       Due date: {{checkout.dueDate}}<br>
       Returned date: {{checkout.returnedDate}}
     </mat-card-content>

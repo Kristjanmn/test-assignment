@@ -9,6 +9,7 @@ import {Checkout} from "../../models/checkout";
   templateUrl: './checkout-detail.component.html'
 })
 export class CheckoutDetailComponent implements OnInit {
+  isDataLoaded: Promise<boolean>;
   checkout: Checkout;
   checkoutStatus: CheckoutStatus;
 
@@ -16,7 +17,6 @@ export class CheckoutDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private checkoutService: CheckoutService,
-    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +39,9 @@ export class CheckoutDetailComponent implements OnInit {
           if(this.isLateReturn()) this.checkoutStatus = CheckoutStatus.LATERETURN;
           else this.checkoutStatus = CheckoutStatus.RETURNED;
         }
-      })
+        /* https://stackoverflow.com/a/44904470 */
+        this.isDataLoaded = Promise.resolve(true);
+      }, () => this.router.navigate(['checkouts']));
   }
 
   toBookDetails(): void {
