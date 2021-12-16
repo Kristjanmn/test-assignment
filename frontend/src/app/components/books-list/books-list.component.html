@@ -56,11 +56,12 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let book; columns: displayedColumns; let i = index"
                  [class.selected]="i == selectedIndex"
-                 [class.favorite]="this.favorites.includes(book.id)"
+                 [class.favorite]="this.favorites?.includes(book.id)"
                  (click)="setSelected(book, i)"></mat-row>
       </mat-table>
 
-      <button mat-raised-button color="accent" style="float: left; margin: 10px" (click)="createBook()">Add book</button>
+      <button mat-raised-button color="accent" style="float: left; margin: 5px" (click)="createBook()">Add book</button>
+      <button mat-raised-button hidden color="accent" style="float: left; margin: 5px;" (click)="openFavoritesList()">View favorites</button>
       <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"
                      showFirstLastButtons
                      aria-label="Select page"></mat-paginator>

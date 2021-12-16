@@ -42,8 +42,9 @@ public class BookService {
      * @return
      */
     public BookDTO getBook(UUID bookId) {
+        Book book;
         try {
-            Book book = bookRepository.getById(bookId);
+            book = bookRepository.getById(bookId);
             return ModelMapperFactory.getMapper().map(book, BookDTO.class);
         } catch (EntityNotFoundException e) {
             return null;
@@ -55,18 +56,11 @@ public class BookService {
      *
      * @return
      */
-    public BookDTO createBook() {
-        BookDTO book = new BookDTO();
-        book.setId(UUID.randomUUID());
-        book.setTitle("Book's title");
-        book.setAuthor("Author's name");
-        book.setGenre("Genre");
-        book.setYear(1999);
-        book.setAdded(LocalDate.now());
-        book.setCheckOutCount(0);
-        book.setStatus(BookStatus.PROCESSING);
-        this.saveBook(book);
-        return ModelMapperFactory.getMapper().map(book, BookDTO.class);
+    public BookDTO createBook(BookDTO bookDTO) {
+        bookDTO.setId(UUID.randomUUID());
+        bookDTO.setAdded(LocalDate.now());
+        this.saveBook(bookDTO);
+        return bookDTO;
     }
 
     public UUID returnBook(BookDTO bookDTO) {
@@ -82,9 +76,9 @@ public class BookService {
         return bookRepository.save(modelMapper.map(bookDTO, Book.class)).getId();
     }
 
-    public UUID saveBook(BookDTO bookDTO) {
+    public void saveBook(BookDTO bookDTO) {
         ModelMapper modelMapper = ModelMapperFactory.getMapper();
-        return bookRepository.save(modelMapper.map(bookDTO, Book.class)).getId();
+        bookRepository.save(modelMapper.map(bookDTO, Book.class));
     }
 
     public void deleteBook(UUID bookId) {

@@ -24,14 +24,18 @@ public class BookController {
 
     @GetMapping(value = "getBook")
     public ResponseEntity<BookDTO> getBook(@RequestParam(value = "bookId") UUID bookId) {
-        BookDTO bookDTO = bookService.getBook(bookId);
-        if(bookDTO == null) return ResponseEntity.notFound().build();
+        BookDTO bookDTO;
+        try {
+            bookDTO = bookService.getBook(bookId);
+        } catch (NullPointerException e) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(bookDTO);
     }
 
-    @GetMapping(value = "createBook")
-    public ResponseEntity<BookDTO> createBook() {
-        return ResponseEntity.ok(bookService.createBook());
+    @PostMapping(value = "createBook")
+    public ResponseEntity<BookDTO> createBook(@RequestBody BookDTO book) {
+        return ResponseEntity.ok(bookService.createBook(book));
     }
 
     @PostMapping(value = "returnBook")
@@ -41,7 +45,8 @@ public class BookController {
 
     @PostMapping(value = "saveBook")
     public ResponseEntity<String> saveBook(@RequestBody BookDTO book) {
-        return ResponseEntity.ok(String.valueOf(bookService.saveBook(book)));
+        bookService.saveBook(book);
+        return ResponseEntity.ok("");
     }
 
     @DeleteMapping(value = "deleteBook")

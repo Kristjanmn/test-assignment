@@ -5,6 +5,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-books-list',
@@ -38,7 +39,8 @@ export class BooksListComponent implements OnInit {
 
   constructor(
     private bookService: BookService,
-    private router: Router) {}
+    private router: Router,
+    private dialog: MatDialog) {}
 
   ngOnInit(): void {
     // TODO this observable should emit books taking into consideration pagination, sorting and filtering options.
@@ -66,10 +68,7 @@ export class BooksListComponent implements OnInit {
   }
 
   createBook(): void {
-    this.bookService.createBook()
-      .subscribe(data => {
-        this.router.navigate(['bookedit', data.id]);
-      }, error => console.error(error));
+    this.router.navigate(['bookedit', 'new']);
   }
 
   applyFilter(): void {
@@ -136,4 +135,16 @@ export class BooksListComponent implements OnInit {
     this.router.navigate(['books', this.selectedBook.id]);
   }
 
+  openFavoritesList(): void {
+    this.dialog.open(BooksListFavoritesDialog);
+  }
+
+}
+
+@Component({
+  selector: 'books-list-favorites-dialog',
+  templateUrl: './books-list-favorites-dialog.html'
+})
+export class BooksListFavoritesDialog {
+  favorites: Book[] = [];
 }
