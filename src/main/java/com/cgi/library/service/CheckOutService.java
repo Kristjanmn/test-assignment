@@ -26,13 +26,86 @@ public class CheckOutService {
     private BookService bookService;
 
     /**
-     * Get all checkouts.
+     * Get all checkouts that match filters.
      *
      * @param pageable
+     * @param title
+     * @param name
+     * @param status
      * @return
      */
-    public Page<CheckOutDTO> getCheckOuts(Pageable pageable) {
+    public Page<CheckOutDTO> getCheckOuts(Pageable pageable, String title, String name, String status) {
         ModelMapper modelMapper = ModelMapperFactory.getMapper();
+        // boolean variables
+        boolean bTitle = title != null;
+        boolean bName = name != null;
+        boolean bStatus = status != null;
+
+        // Title and Name
+        if(bTitle && bName && bStatus) {
+            if(status.equalsIgnoreCase("Borrowed"))
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateIsNull(pageable, title, name, name)
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+            if(status.equalsIgnoreCase("Late"))
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndDueDateIsBeforeAndReturnedDateIsNull(pageable, title, name, name, LocalDate.now())
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+            if(status.equalsIgnoreCase("Returned"))
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateNotNull(pageable, title, name, name)
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+        }
+
+        if(bTitle && bName && !bStatus)
+            return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContaining(pageable, title, name, name)
+                .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+
+
+        // only by Title
+        if(bTitle && !bName && bStatus) {
+            if(status.equalsIgnoreCase("Borrowed"))
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndReturnedDateIsNull(pageable, title)
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+            if(status.equalsIgnoreCase("Late"))
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndDueDateIsBeforeAndReturnedDateIsNull(pageable, title, LocalDate.now())
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+            if(status.equalsIgnoreCase("Returned"))
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndReturnedDateNotNull(pageable, title)
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+        }
+
+        if(bTitle && !bName && !bStatus)
+            return checkOutRepository.findAllByBorrowedBook_TitleContaining(pageable, title)
+                    .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+
+        // only by Name
+        if(!bTitle && bName && bStatus) {
+            if(status.equalsIgnoreCase("Borrowed"))
+                return checkOutRepository.findALlByBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateIsNull(pageable, name, name)
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+            if(status.equalsIgnoreCase("Late"))
+                return checkOutRepository.findALlByBorrowerFirstNameContainingOrBorrowerLastNameContainingAndDueDateIsBeforeAndReturnedDateIsNull(pageable, name, name, LocalDate.now())
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+            if(status.equalsIgnoreCase("Returned"))
+                return checkOutRepository.findALlByBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateNotNull(pageable, name, name)
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+        }
+
+        if(!bTitle && bName && !bStatus)
+            return checkOutRepository.findALlByBorrowerFirstNameContainingOrBorrowerLastNameContaining(pageable, name, name)
+                    .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+
+        // only by Status
+        if(!bTitle && !bName && bStatus) {
+            if(status.equalsIgnoreCase("Borrowed"))
+                return checkOutRepository.findAllByReturnedDateIsNull(pageable)
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+            if(status.equalsIgnoreCase("Late"))
+                return checkOutRepository.findAllByDueDateBeforeAndReturnedDateIsNull(pageable, LocalDate.now())
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+            if(status.equalsIgnoreCase("returned"))
+                return checkOutRepository.findAllByReturnedDateNotNull(pageable)
+                        .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
+        }
+
         return checkOutRepository.findAll(pageable).map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
     }
 

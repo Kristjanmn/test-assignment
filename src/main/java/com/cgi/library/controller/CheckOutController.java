@@ -23,8 +23,11 @@ public class CheckOutController {
     private BookService bookService;
 
     @GetMapping(value = "getCheckouts")
-    public ResponseEntity<Page<CheckOutDTO>> getCheckOuts(Pageable pageable) {
-        return ResponseEntity.ok(checkOutService.getCheckOuts(pageable));
+    public ResponseEntity<Page<CheckOutDTO>> getCheckOuts(Pageable pageable,
+                                                          @RequestParam(name = "title", required = false) String title,
+                                                          @RequestParam(name = "name", required = false) String name,
+                                                          @RequestParam(name = "status", required = false) String status) {
+        return ResponseEntity.ok(checkOutService.getCheckOuts(pageable, title, name, status));
     }
 
     @GetMapping(value = "getCheckout")
