@@ -91,7 +91,7 @@ export class BookEditComponent implements OnInit {
   }
 
   updateBook(): void {
-    this.bookService.saveBook(this.book).subscribe(() => {});
+    this.bookService.saveBook(this.book).subscribe(() => this.router.navigate(['books', this.book.id]));
   }
 
   openNewDialog(): void {
@@ -103,7 +103,7 @@ export class BookEditComponent implements OnInit {
 
   createBook(): void {
     this.bookService.createBook(this.book).subscribe(response => {
-      this.router.navigate(['book', response.id]);
+      this.router.navigate(['books', response.id]);
     });
   }
 
