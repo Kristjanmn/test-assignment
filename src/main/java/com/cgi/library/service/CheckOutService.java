@@ -44,18 +44,18 @@ public class CheckOutService {
         // Title and Name
         if(bTitle && bName && bStatus) {
             if(status.equalsIgnoreCase("Borrowed"))
-                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateIsNull(pageable, title, name, name)
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowedBook_TitleContainingAndBorrowerLastNameContainingAndReturnedDateIsNull(pageable, title, name, title, name)
                         .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
             if(status.equalsIgnoreCase("Late"))
-                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndDueDateIsBeforeAndReturnedDateIsNull(pageable, title, name, name, LocalDate.now())
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowedBook_TitleContainingAndBorrowerLastNameContainingAndDueDateIsBeforeAndReturnedDateIsNull(pageable, title, name, title, name, LocalDate.now())
                         .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
             if(status.equalsIgnoreCase("Returned"))
-                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateNotNull(pageable, title, name, name)
+                return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowedBook_TitleContainingAndBorrowerLastNameContainingAndReturnedDateNotNull(pageable, title, name, title, name)
                         .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
         }
 
         if(bTitle && bName && !bStatus)
-            return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContaining(pageable, title, name, name)
+            return checkOutRepository.findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowedBook_TitleContainingAndBorrowerLastNameContaining(pageable, title, name, title, name)
                 .map(checkOut -> modelMapper.map(checkOut, CheckOutDTO.class));
 
 

@@ -14,7 +14,7 @@ public interface CheckOutRepository extends JpaRepository<CheckOut, UUID> {
 
     Page<CheckOut> findAllByBorrowedBook_TitleContaining(Pageable pageable, String title);
 
-    Page<CheckOut> findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContaining(Pageable pageable, String title, String name1, String name2);
+    Page<CheckOut> findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowedBook_TitleContainingAndBorrowerLastNameContaining(Pageable pageable, String title1, String name1, String title2, String name2);
 
     Page<CheckOut> findALlByBorrowerFirstNameContainingOrBorrowerLastNameContaining(Pageable pageable, String name1, String name2);
 
@@ -23,7 +23,7 @@ public interface CheckOutRepository extends JpaRepository<CheckOut, UUID> {
 
     Page<CheckOut> findAllByBorrowedBook_TitleContainingAndReturnedDateIsNull(Pageable pageable, String title);
 
-    Page<CheckOut> findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateIsNull(Pageable pageable, String title, String name1, String name2);
+    Page<CheckOut> findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowedBook_TitleContainingAndBorrowerLastNameContainingAndReturnedDateIsNull(Pageable pageable, String title1, String name1, String title2, String name2);
 
     Page<CheckOut> findALlByBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateIsNull(Pageable pageable, String name1, String name2);
 
@@ -32,7 +32,7 @@ public interface CheckOutRepository extends JpaRepository<CheckOut, UUID> {
 
     Page<CheckOut> findAllByBorrowedBook_TitleContainingAndDueDateIsBeforeAndReturnedDateIsNull(Pageable pageable, String title, LocalDate currentDate);
 
-    Page<CheckOut> findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndDueDateIsBeforeAndReturnedDateIsNull(Pageable pageable, String title, String name1, String name2, LocalDate currentDate);
+    Page<CheckOut> findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowedBook_TitleContainingAndBorrowerLastNameContainingAndDueDateIsBeforeAndReturnedDateIsNull(Pageable pageable, String title1, String name1, String title2, String name2, LocalDate currentDate);
 
     Page<CheckOut> findALlByBorrowerFirstNameContainingOrBorrowerLastNameContainingAndDueDateIsBeforeAndReturnedDateIsNull(Pageable pageable, String name1, String name2, LocalDate currentDate);
 
@@ -41,7 +41,7 @@ public interface CheckOutRepository extends JpaRepository<CheckOut, UUID> {
 
     Page<CheckOut> findAllByBorrowedBook_TitleContainingAndReturnedDateNotNull(Pageable pageable, String title);
 
-    Page<CheckOut> findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateNotNull(Pageable pageable, String title, String name1, String name2);
+    Page<CheckOut> findAllByBorrowedBook_TitleContainingAndBorrowerFirstNameContainingOrBorrowedBook_TitleContainingAndBorrowerLastNameContainingAndReturnedDateNotNull(Pageable pageable, String title1, String name1, String title2, String name2);
 
     Page<CheckOut> findALlByBorrowerFirstNameContainingOrBorrowerLastNameContainingAndReturnedDateNotNull(Pageable pageable, String name1, String name2);
 
