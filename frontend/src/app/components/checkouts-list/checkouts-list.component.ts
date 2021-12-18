@@ -1,31 +1,32 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {Checkout} from "../../models/checkout";
 import {CheckoutService} from "../../services/checkout.service";
 import {Router} from "@angular/router";
+import {SortDirection} from "../../models/page";
 
 @Component({
   selector: 'app-checkouts-list',
   templateUrl: './checkouts-list.component.html'
 })
-export class CheckoutsListComponent implements OnInit {
-  allCheckouts: Checkout[];
-  sortedCheckouts: Checkout[];
+export class CheckoutsListComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<Checkout>;
   displayedColumns: string[] = ["title", "firstName", "lastName", "checkoutDate", "dueDate"];
   selectedCheckout: Checkout;
   selectedIndex: number;
 
   // Filter
-  filterBookTitle: string = "";
-  filterName: string = "";
+  filterBookTitle: string;
+  filterName: string;
   filterStatus: string = "All";
-  filteredCheckouts: Checkout[];
   statusList: string[] = ['All','Borrowed','Late','Returned'];
 
-  // Sorting
+  // Sorting/paging
+  sortColumn: string;
+  sortDirection: SortDirection;
+  totalElements: number;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -36,44 +37,33 @@ export class CheckoutsListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO this observable should emit books taking into consideration pagination, sorting and filtering options.
-    /*this.books$ = this.bookService.getBooks({})
+    this.checkoutService.getCheckouts({pageIndex: 0, pageSize: 10})
       .subscribe(data => {
-        this.dataSource = new MatTableDataSource<Book>(data.content);
-      })*/
-    this.getCheckouts();
+        this.dataSource = new MatTableDataSource<Checkout>(data.content);
+        this.paginator.pageSize = data.number;
+        this.totalElements = data.totalElements;
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      })
+  }
+
+  ngAfterViewInit(): void {
+
   }
 
   getCheckouts(): void {
-    this.checkoutService.getCheckouts({pageSize:999999999})
+    this.checkoutService.getCheckouts({pageIndex: this.paginator.pageIndex, pageSize: this.paginator.pageSize, sort: this.sortColumn,
+      direction: this.sortDirection, title: this.filterBookTitle, name: this.filterName, status: this.filterStatus})
       .subscribe(data => {
-        this.allCheckouts = data.content;
-        this.filteredCheckouts = data.content;
-        this.dataSource = new MatTableDataSource<Checkout>(this.filteredCheckouts);
-        this.dataSource.paginator = this.paginator;
+        // Pagination
+        this.dataSource = new MatTableDataSource<Checkout>(data.content);
         this.dataSource.sort = this.sort;
-        /* https://stackoverflow.com/questions/48891174/angular-material-2-datatable-sorting-with-nested-objects */
-        this.dataSource.sortingDataAccessor = (item, property) => {
-          switch(property) {
-            case 'borrowedBook.title': return item.borrowedBook.title;
-            default: return item[property];
-          }
-        };
+        this.totalElements = data.totalElements;
       }, error => console.error(error));
   }
 
   applyFilter(): void {
-    this.dataSource.paginator.firstPage();
-    this.filteredCheckouts = [];
-    for(let checkout of this.allCheckouts) {
-      if(checkout.borrowedBook.title.toLowerCase().includes(this.filterBookTitle.toLowerCase()) &&
-        (checkout.borrowerFirstName.toLowerCase().includes(this.filterName.toLowerCase()) ||
-          checkout.borrowerLastName.toLowerCase().includes(this.filterName.toLowerCase())) &&
-        (this.filterStatus == "All" /*|| book.status == this.filterStatus.toUpperCase()*/)) this.filteredCheckouts.push(checkout);
-    }
-    this.dataSource = new MatTableDataSource<Checkout>(this.filteredCheckouts);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.getCheckouts();
   }
 
   resetFilter(): void {
@@ -84,37 +74,24 @@ export class CheckoutsListComponent implements OnInit {
   }
 
   sortCheckouts(sort: Sort): void {
-    // Return to first page
-    this.dataSource.paginator.firstPage();
-
-    if(!sort.active || sort.direction === '') {
-      this.sortedCheckouts = this.filteredCheckouts;
-      return;
+    if(!sort.active || !sort.direction) {
+      this.sortColumn = null;
+      this.sortDirection = null;
+    } else {
+      this.sortColumn = sort.active;
+      this.sortDirection = sort.direction;
     }
-
-    this.sortedCheckouts = this.filteredCheckouts.slice().sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
-        default:
-          return 0;
-        case 'bookTitle':
-          return this.compare(a.borrowedBook.title, b.borrowedBook.title, isAsc);
-        case 'firstName':
-          return this.compare(a.borrowerFirstName, b.borrowerFirstName, isAsc);
-        case 'lastName':
-          return this.compare(a.borrowerLastName, b.borrowerLastName, isAsc);
-        case 'checkoutDate':
-          return this.compare(a.checkedOutDate, b.checkedOutDate, isAsc);
-        case 'dueDate':
-          return this.compare(a.dueDate, b.dueDate, isAsc);
-      }
-    });
+    this.getCheckouts();
   }
 
-  compare(a: number | string, b: number | string, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-  }
-
+  /**
+   * Set an row in table as selected. I have used this in another app
+   * for showing additional information or display buttons when selecting
+   * an row. But in this case I will just open the selected checkout page.
+   *
+   * @param checkout
+   * @param index
+   */
   setSelected(checkout: Checkout, index: number): void {
     if(this.selectedCheckout && this.selectedCheckout.id == checkout.id) {
       this.selectedCheckout = undefined;
@@ -127,8 +104,7 @@ export class CheckoutsListComponent implements OnInit {
   }
 
   isLate(dueDate: string, returnedDate: string): boolean {
-    // Did not work out the way I had planned, so here is a poop workaround.
-    // Maybe i'm just tired, but this seems to work the wrong way around
+    // This calculations seems wrong, but it works
     if(returnedDate != null && returnedDate.trim() != "") return false;
     return new Date() > new Date(dueDate);
   }

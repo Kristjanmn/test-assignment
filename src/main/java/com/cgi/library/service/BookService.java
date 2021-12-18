@@ -25,14 +25,58 @@ public class BookService {
     private CheckOutService checkOutService;
 
     /**
-     * Get all books.
+     * Get all books according to filter.
      *
      * @param pageable
+     * @param title
+     * @param author
+     * @param fromYear
+     * @param toYear
+     * @param status
      * @return
      */
-    public Page<BookDTO> getBooks(Pageable pageable) {
+    public Page<BookDTO> getBooks(Pageable pageable, String title, String author, int fromYear, int toYear, BookStatus status) {
         ModelMapper modelMapper = ModelMapperFactory.getMapper();
-        return bookRepository.findAll(pageable).map(book -> modelMapper.map(book, BookDTO.class));
+        // boolean variables
+        boolean bTitle = title != null;
+        boolean bAuthor = author != null;
+        boolean bStatus = status != null;
+
+        // A ton of filtering
+        if(bTitle && bAuthor && bStatus)
+            return bookRepository.findAllByYearBetweenAndTitleContainingAndAuthorContainingAndStatus(pageable, fromYear, toYear, title, author, status)
+                    .map(book -> modelMapper.map(book, BookDTO.class));
+
+        if(bTitle && bAuthor && !bStatus)
+            return bookRepository.findAllByYearBetweenAndTitleContainingAndAuthorContaining(pageable, fromYear, toYear, title, author)
+                    .map(book -> modelMapper.map(book, BookDTO.class));
+
+        if(bTitle && !bAuthor && bStatus)
+            return bookRepository.findAllByYearBetweenAndTitleContainingAndStatus(pageable, fromYear, toYear, title, status)
+                    .map(book -> modelMapper.map(book, BookDTO.class));
+
+        if(bTitle && !bAuthor && !bStatus)
+            return bookRepository.findAllByYearBetweenAndTitleContaining(pageable, fromYear, toYear, title)
+                    .map(book -> modelMapper.map(book, BookDTO.class));
+
+        if(!bTitle && bAuthor && bStatus)
+            return bookRepository.findAllByYearBetweenAndAuthorContainingAndStatus(pageable, fromYear, toYear, author, status)
+                    .map(book -> modelMapper.map(book, BookDTO.class));
+
+        if(!bTitle && bAuthor && !bStatus)
+            return bookRepository.findAllByYearBetweenAndAuthorContaining(pageable, fromYear, toYear, author)
+                    .map(book -> modelMapper.map(book, BookDTO.class));
+
+        if(!bTitle && !bAuthor && bStatus)
+            return bookRepository.findAllByYearBetweenAndStatus(pageable, fromYear, toYear, status)
+                    .map(book -> modelMapper.map(book, BookDTO.class));
+
+        // In case fromYear and toYear were not provided.
+        if(fromYear == 0 && toYear == 0) return bookRepository.findAll(pageable)
+                .map(book -> modelMapper.map(book, BookDTO.class));
+
+        return bookRepository.findAllByYearBetween(pageable, fromYear, toYear)
+                .map(book -> modelMapper.map(book, BookDTO.class));
     }
 
     /**
@@ -63,7 +107,7 @@ public class BookService {
         return bookDTO;
     }
 
-    public UUID returnBook(BookDTO bookDTO) {
+    public void returnBook(BookDTO bookDTO) {
         ModelMapper modelMapper = ModelMapperFactory.getMapper();
         // Book
         bookDTO.setStatus(BookStatus.RETURNED);
@@ -73,7 +117,7 @@ public class BookService {
         CheckOutDTO checkOut = checkOutService.findCheckOutByBookId(bookDTO.getId());
         checkOut.setReturnedDate(LocalDate.now());
         checkOutService.saveCheckOut(checkOut);
-        return bookRepository.save(modelMapper.map(bookDTO, Book.class)).getId();
+        bookRepository.save(modelMapper.map(bookDTO, Book.class));
     }
 
     public void saveBook(BookDTO bookDTO) {

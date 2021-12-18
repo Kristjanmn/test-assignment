@@ -6,6 +6,7 @@ import {MatSort, Sort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
+import {SortDirection} from "../../models/page";
 
 @Component({
   selector: 'app-books-list',
@@ -13,27 +14,26 @@ import {MatDialog} from "@angular/material/dialog";
   styleUrls: ['./books-list.component.scss']
 })
 export class BooksListComponent implements OnInit {
-  allBooks: Book[];
-  sortedBooks: Book[];
   dataSource: MatTableDataSource<Book>;
   displayedColumns: string[] = ["title", "author", "genre", "year"];
   selectedBook: Book;
   selectedIndex: number;
 
   // Filter
-  filterTitle: string = "";
-  filterAuthor: string = "";
-  filterYearMin: number = 1900;
-  filterYearMax: number = 2022;
+  filterYearMinDefault: number = 1900;
+  filterYearMaxDefault: number = 2022;
+  filterTitle: string;
+  filterAuthor: string;
+  filterYearMin: number = this.filterYearMinDefault;
+  filterYearMax: number = this.filterYearMaxDefault;
   filterStatus: string = 'All';
-  filteredBooks: Book[];
-  // Filter limits
-  filterYearMinLimit: number = 1900;
-  filterYearMaxLimit: number = 2050;
   statusList: string[] = ['All','Available','Borrowed','Returned','Damaged','Processing'];
   favorites: string[] = [];
 
-  // Sorting
+  // Sorting/paging
+  sortColumn: string;
+  sortDirection: SortDirection;
+  totalElements: number;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -43,27 +43,29 @@ export class BooksListComponent implements OnInit {
     private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    // TODO this observable should emit books taking into consideration pagination, sorting and filtering options.
-    /*this.books$ = this.bookService.getBooks({})
+    this.bookService.getBooks({pageIndex: 0, pageSize: 10, fromYear: this.filterYearMin, toYear: this.filterYearMax})
       .subscribe(data => {
         this.dataSource = new MatTableDataSource<Book>(data.content);
-      })*/
-    this.getBooks();
-    // favorite books
+        this.paginator.pageSize = data.number;
+        this.totalElements = data.totalElements;
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      })
+    // favorite books (not implemented)
     if(localStorage.getItem('favoriteBooks')) {
       this.favorites = JSON.parse(localStorage.getItem('favoriteBooks'));
     }
   }
 
   getBooks(): void {
-    // This is really STUPID. I have no idea how this works :'(
-    this.bookService.getBooks({ pageSize:999999999})
+    this.bookService.getBooks({pageIndex: this.paginator.pageIndex,
+      pageSize: this.paginator.pageSize, sort: this.sortColumn, direction: this.sortDirection, title: this.filterTitle,
+      author: this.filterAuthor, fromYear: this.filterYearMin, toYear: this.filterYearMax, status: this.filterStatus})
       .subscribe(data => {
-        this.allBooks = data.content;
-        this.filteredBooks = data.content;
-        this.dataSource = new MatTableDataSource<Book>(this.filteredBooks);
-        this.dataSource.paginator = this.paginator;
+        // Pagination
+        this.dataSource = new MatTableDataSource<Book>(data.content);
         this.dataSource.sort = this.sort;
+        this.totalElements = data.totalElements;
       }, error => console.error(error));
   }
 
@@ -72,58 +74,37 @@ export class BooksListComponent implements OnInit {
   }
 
   applyFilter(): void {
-    this.dataSource.paginator.firstPage();
-    this.filteredBooks = [];
-    for(let book of this.allBooks) {
-      if(book.title.toLowerCase().includes(this.filterTitle.toLowerCase()) &&
-        book.author.toLowerCase().includes(this.filterAuthor.toLowerCase()) &&
-        ((book.year >= this.filterYearMin) && (book.year <= this.filterYearMax)) &&
-        (this.filterStatus == "All" || book.status == this.filterStatus.toUpperCase())) this.filteredBooks.push(book);
-    }
-    this.dataSource = new MatTableDataSource<Book>(this.filteredBooks);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.getBooks();
   }
 
   resetFilter(): void {
     this.filterTitle = "";
     this.filterAuthor = "";
-    this.filterYearMin = this.filterYearMinLimit;
-    this.filterYearMax = this.filterYearMaxLimit;
+    this.filterYearMin = this.filterYearMinDefault;
+    this.filterYearMax = this.filterYearMaxDefault;
     this.filterStatus = "All";
     this.applyFilter();
   }
 
   sortBooks(sort: Sort): void {
-    // Return to first page
-    this.dataSource.paginator.firstPage();
-
-    if(!sort.active || sort.direction === '') {
-      this.sortedBooks = this.filteredBooks;
-      return;
+    if(!sort.active || !sort.direction) {
+      this.sortColumn = null;
+      this.sortDirection = null;
+    } else {
+      this.sortColumn = sort.active;
+      this.sortDirection = sort.direction;
     }
-
-    this.sortedBooks = this.filteredBooks.slice().sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
-        default:
-          return 0;
-        case 'title':
-          return this.compare(a.title, b.title, isAsc);
-        case 'author':
-          return this.compare(a.author, b.author, isAsc);
-        case 'year':
-          return this.compare(a.year, b.year, isAsc);
-        case 'genre':
-          return this.compare(a.genre, b.genre, isAsc);
-      }
-    });
+    this.getBooks();
   }
 
-  compare(a: number | string, b: number | string, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-  }
-
+  /**
+   * Set an row in table as selected. I have used this in another app
+   * for showing additional information or display buttons when selecting
+   * an row. But in this case I will just open the selected book page.
+   *
+   * @param book
+   * @param index
+   */
   setSelected(book: Book, index: number): void {
     if(this.selectedBook && this.selectedBook.id == book.id) {
       this.selectedBook = undefined;

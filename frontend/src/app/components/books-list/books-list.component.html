@@ -10,11 +10,11 @@
   </mat-form-field>
   <mat-form-field style="margin: 5px;" appearance="fill">
     <mat-label>From year</mat-label>
-    <input matInput [(ngModel)]="filterYearMin" (keyup)="applyFilter()" (change)="applyFilter()" type="number" [min]="filterYearMinLimit" [max]="filterYearMaxLimit">
+    <input matInput [(ngModel)]="filterYearMin" (keyup)="applyFilter()" (change)="applyFilter()" type="number" [min]="filterYearMinDefault" [max]="filterYearMaxDefault">
   </mat-form-field>
   <mat-form-field style="margin: 5px;" appearance="fill">
     <mat-label>To year</mat-label>
-    <input matInput [(ngModel)]="filterYearMax" (keyup)="applyFilter()" (change)="applyFilter()" type="number" [min]="filterYearMinLimit" [max]="filterYearMaxLimit">
+    <input matInput [(ngModel)]="filterYearMax" (keyup)="applyFilter()" (change)="applyFilter()" type="number" [min]="filterYearMinDefault" [max]="filterYearMaxDefault">
   </mat-form-field>
   <mat-form-field style="margin: 5px;" appearance="fill">
     <mat-label>Status</mat-label>
@@ -63,6 +63,8 @@
       <button mat-raised-button color="accent" style="float: left; margin: 5px" (click)="createBook()">Add book</button>
       <button mat-raised-button hidden color="accent" style="float: left; margin: 5px;" (click)="openFavoritesList()">View favorites</button>
       <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"
+                     [length]="this.totalElements"
+                     (page)="getBooks()"
                      showFirstLastButtons
                      aria-label="Select page"></mat-paginator>
     </mat-card-content>

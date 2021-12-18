@@ -2,8 +2,8 @@ import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Page, PageRequest} from "../models/page";
-import {RestUtil} from "./rest-util";
+import {CheckoutPage, CheckoutPageRequest} from "../models/checkoutPage";
+import {CheckoutRestUtil} from "./checkoutRest-util";
 import {Checkout} from "../models/checkout";
 
 @Injectable({
@@ -19,10 +19,10 @@ export class CheckoutService {
   /**
    * Get all checkouts.
    */
-  getCheckouts(filter: Partial<PageRequest>): Observable<Page<Checkout>> {
+  getCheckouts(filter: Partial<CheckoutPageRequest>): Observable<CheckoutPage<Checkout>> {
     const url = this.baseUrl + '/getCheckouts';
-    const params = RestUtil.buildParamsFromPageRequest(filter);
-    return this.http.get<Page<Checkout>>(url, {params});
+    const params = CheckoutRestUtil.buildParamsFromPageRequest(filter);
+    return this.http.get<CheckoutPage<Checkout>>(url, {params});
   }
 
   /**
@@ -61,12 +61,7 @@ export class CheckoutService {
     return new Date() > new Date(checkout.dueDate);
   }
 
-  isBookReturned(checkout: Checkout): boolean {
-    if(checkout.returnedDate == null || checkout.returnedDate.trim() == "") return false;
-    return true;
-  }
-
   isLateReturn(checkout: Checkout): boolean {
-    return new Date() > new Date(checkout.returnedDate);
+    return new Date(checkout.returnedDate) > new Date(checkout.dueDate);
   }
 }
