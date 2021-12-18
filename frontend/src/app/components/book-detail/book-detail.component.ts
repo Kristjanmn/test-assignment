@@ -17,7 +17,6 @@ export class BookDetailComponent implements OnInit {
   checkout: Checkout;
 
   isAvailable: boolean;
-  isLate: boolean;
   isFavorite: boolean;
   favorites: string[] = [];
 
@@ -84,7 +83,7 @@ export class BookDetailComponent implements OnInit {
 
   returnBook(): void {
     this.bookService.returnBook(this.book)
-      .subscribe(data => this.router.navigate(['books', data]));
+      .subscribe(() => this.router.navigate(['books']));
   }
 
   toBookEditing(): void {

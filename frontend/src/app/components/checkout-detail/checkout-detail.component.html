@@ -4,8 +4,8 @@
     <mat-card-content>
       First name: {{checkout.borrowerFirstName}}<br>
       Last name: {{checkout.borrowerLastName}}<br>
-      Book: <a (click)="toBookDetails()">{{this.checkout.borrowedBook.title}}</a><br>
-      Status: <label [class.available]="checkoutStatus.valueOf() == 'RETURNED'" [class.unavailable]="isLateReturn() || isLateReturn()">{{checkoutStatus.valueOf()}}</label><br>
+      Book: <a (click)="toBookDetails()">{{this.checkout.borrowedBook.title}}</a><button mat-flat-button (click)="toBookDetails()">View</button><br>
+      Status: <label [class.available]="checkoutStatus.valueOf() == 'RETURNED'" [class.unavailable]="isBookLate() || isLateReturn()">{{checkoutStatus.valueOf()}}</label><br>
       Checked out: {{checkout.checkedOutDate}}<br>
       Due date: {{checkout.dueDate}}<br>
       Returned date: {{checkout.returnedDate}}

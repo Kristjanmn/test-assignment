@@ -1,7 +1,6 @@
 import {ActivatedRoute, Router} from "@angular/router";
 import {Component, OnInit} from "@angular/core";
 import {CheckoutService} from "../../services/checkout.service";
-import {MatDialog} from "@angular/material/dialog";
 import {Checkout} from "../../models/checkout";
 
 @Component({

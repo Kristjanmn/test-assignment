@@ -13,7 +13,6 @@ export class CheckoutEditComponent implements OnInit {
   isDataLoaded: Promise<boolean>;
   checkout: Checkout;
   status: string;
-  // I know that there are better ways to do it.
   statusList: string[] = ["Borrowed","Returned"];
   // Dates
   inputCheckoutDate: string;

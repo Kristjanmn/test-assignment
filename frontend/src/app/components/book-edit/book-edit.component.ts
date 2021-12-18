@@ -103,7 +103,7 @@ export class BookEditComponent implements OnInit {
 
   createBook(): void {
     this.bookService.createBook(this.book).subscribe(response => {
-      this.router.navigate(['bookedit', response.id]);
+      this.router.navigate(['book', response.id]);
     });
   }
 
