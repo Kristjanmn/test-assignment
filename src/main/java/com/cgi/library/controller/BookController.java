@@ -1,6 +1,7 @@
 package com.cgi.library.controller;
 
 import com.cgi.library.model.BookDTO;
+import com.cgi.library.model.BookStatus;
 import com.cgi.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,8 +19,15 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping(value = "getBooks")
-    public ResponseEntity<Page<BookDTO>> getBooks(Pageable pageable) {
-        return ResponseEntity.ok(bookService.getBooks(pageable));
+    public ResponseEntity<Page<BookDTO>> getBooks(Pageable pageable,
+                                                  @RequestParam(name = "title", required = false) String title,
+                                                  @RequestParam(name = "author", required = false) String author,
+                                                  @RequestParam(name = "fromYear", required = false) Integer fromYear,
+                                                  @RequestParam(name = "toYear", required = false) Integer toYear,
+                                                  @RequestParam(name = "status", required = false) String status) {
+        BookStatus bookStatus = null;
+        if(status != null) bookStatus = BookStatus.valueOf(status.toUpperCase());
+        return ResponseEntity.ok(bookService.getBooks(pageable, title, author, fromYear, toYear, bookStatus));
     }
 
     @GetMapping(value = "getBook")
@@ -40,7 +48,8 @@ public class BookController {
 
     @PostMapping(value = "returnBook")
     public ResponseEntity<String> returnBook(@RequestBody BookDTO book) {
-        return ResponseEntity.ok(String.valueOf(bookService.returnBook(book)));
+        bookService.returnBook(book);
+        return ResponseEntity.ok("");
     }
 
     @PostMapping(value = "saveBook")
