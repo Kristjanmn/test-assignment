@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {BookService} from '../../services/book.service';
 import {Book} from '../../models/book';
 import {MatTableDataSource} from "@angular/material/table";
@@ -7,6 +7,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {SortDirection} from "../../models/page";
+import {LoaderService} from "../../services/loader.service";
 
 @Component({
   selector: 'app-books-list',
@@ -38,9 +39,11 @@ export class BooksListComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
+    private loaderService: LoaderService,
+    private cdr: ChangeDetectorRef,
     private bookService: BookService,
     private router: Router,
-    private dialog: MatDialog) {}
+    private dialog: MatDialog) {this.loaderService.isLoading.next(true);}
 
   ngOnInit(): void {
     this.bookService.getBooks({pageIndex: 0, pageSize: 10, fromYear: this.filterYearMin, toYear: this.filterYearMax})
@@ -50,6 +53,7 @@ export class BooksListComponent implements OnInit {
         this.totalElements = data.totalElements;
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.loaderService.isLoading.next(false);
       })
     // favorite books (not implemented)
     if(localStorage.getItem('favoriteBooks')) {
@@ -58,6 +62,7 @@ export class BooksListComponent implements OnInit {
   }
 
   getBooks(): void {
+    this.loaderService.isLoading.next(true);
     this.bookService.getBooks({pageIndex: this.paginator.pageIndex,
       pageSize: this.paginator.pageSize, sort: this.sortColumn, direction: this.sortDirection, title: this.filterTitle,
       author: this.filterAuthor, fromYear: this.filterYearMin, toYear: this.filterYearMax, status: this.filterStatus})
@@ -66,6 +71,7 @@ export class BooksListComponent implements OnInit {
         this.dataSource = new MatTableDataSource<Book>(data.content);
         this.dataSource.sort = this.sort;
         this.totalElements = data.totalElements;
+        this.loaderService.isLoading.next(false);
       }, error => console.error(error));
   }
 

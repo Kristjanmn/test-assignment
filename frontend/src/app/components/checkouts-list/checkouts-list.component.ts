@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
@@ -6,12 +6,13 @@ import {Checkout} from "../../models/checkout";
 import {CheckoutService} from "../../services/checkout.service";
 import {Router} from "@angular/router";
 import {SortDirection} from "../../models/page";
+import {LoaderService} from "../../services/loader.service";
 
 @Component({
   selector: 'app-checkouts-list',
   templateUrl: './checkouts-list.component.html'
 })
-export class CheckoutsListComponent implements OnInit, AfterViewInit {
+export class CheckoutsListComponent implements OnInit {
   dataSource: MatTableDataSource<Checkout>;
   displayedColumns: string[] = ["title", "firstName", "lastName", "checkoutDate", "dueDate"];
   selectedCheckout: Checkout;
@@ -31,10 +32,10 @@ export class CheckoutsListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
+    private loaderService: LoaderService,
     private checkoutService: CheckoutService,
     private router: Router
-  ) {
-  }
+  ) {this.loaderService.isLoading.next(true);}
 
   ngOnInit(): void {
     this.checkoutService.getCheckouts({pageIndex: 0, pageSize: 10})
@@ -44,14 +45,12 @@ export class CheckoutsListComponent implements OnInit, AfterViewInit {
         this.totalElements = data.totalElements;
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.loaderService.isLoading.next(false);
       })
   }
 
-  ngAfterViewInit(): void {
-
-  }
-
   getCheckouts(): void {
+    this.loaderService.isLoading.next(true);
     this.checkoutService.getCheckouts({pageIndex: this.paginator.pageIndex, pageSize: this.paginator.pageSize, sort: this.sortColumn,
       direction: this.sortDirection, title: this.filterBookTitle, name: this.filterName, status: this.filterStatus})
       .subscribe(data => {
@@ -59,6 +58,7 @@ export class CheckoutsListComponent implements OnInit, AfterViewInit {
         this.dataSource = new MatTableDataSource<Checkout>(data.content);
         this.dataSource.sort = this.sort;
         this.totalElements = data.totalElements;
+        this.loaderService.isLoading.next(false);
       }, error => console.error(error));
   }
 

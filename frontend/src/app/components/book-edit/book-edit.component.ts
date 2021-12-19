@@ -5,6 +5,7 @@ import {BookService} from "../../services/book.service";
 import {MatDialog} from "@angular/material/dialog";
 import {CheckoutService} from "../../services/checkout.service";
 import {BookStatus} from "../../models/book-status";
+import {LoaderService} from "../../services/loader.service";
 
 @Component({
   selector: 'app-book-edit',
@@ -19,6 +20,7 @@ export class BookEditComponent implements OnInit {
   statusList: string[] = ['Available','Borrowed','Returned','Damaged','Processing'];
 
   constructor(
+    private loaderService: LoaderService,
     private route: ActivatedRoute,
     private router: Router,
     private bookService: BookService,
@@ -60,6 +62,7 @@ export class BookEditComponent implements OnInit {
         this.checkRequirements();
         /* https://stackoverflow.com/a/44904470 */
         this.isDataLoaded = Promise.resolve(true);
+        this.loaderService.isLoading.next(false);
       }, () => this.router.navigate(['books']));
   }
 

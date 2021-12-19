@@ -38,3 +38,9 @@ mat-row:hover {
 [hidden] {
   display: none !important;
 }
+
+.loader-container {
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+}

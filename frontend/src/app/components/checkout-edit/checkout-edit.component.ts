@@ -4,6 +4,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {Checkout} from "../../models/checkout";
 import {CheckoutService} from "../../services/checkout.service";
 import {DatePipe} from "@angular/common";
+import {LoaderService} from "../../services/loader.service";
 
 @Component({
   selector: 'app-book-edit',
@@ -20,12 +21,13 @@ export class CheckoutEditComponent implements OnInit {
   inputReturnedDate: string;
 
   constructor(
+    private loaderService: LoaderService,
     private route: ActivatedRoute,
     private router: Router,
     private checkoutService: CheckoutService,
     private dialog: MatDialog,
     private datePipe: DatePipe
-  ) {}
+  ) {this.loaderService.isLoading.next(true);}
 
   ngOnInit(): void {
     this.route.params
@@ -50,6 +52,7 @@ export class CheckoutEditComponent implements OnInit {
         this.inputReturnedDate = data.returnedDate;
         /* https://stackoverflow.com/a/44904470 */
         this.isDataLoaded = Promise.resolve(true);
+        this.loaderService.isLoading.next(false);
       }, () => this.router.navigate(['checkouts']));
   }
 

@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from "@angular/material/dialog";
 import {Checkout} from "../../models/checkout";
 import {CheckoutService} from "../../services/checkout.service";
+import {LoaderService} from "../../services/loader.service";
 
 @Component({
   selector: 'app-book-detail',
@@ -21,18 +22,19 @@ export class BookDetailComponent implements OnInit {
   favorites: string[] = [];
 
   constructor(
+    private loaderService: LoaderService,
     private route: ActivatedRoute,
     private router: Router,
     private bookService: BookService,
     private checkoutService: CheckoutService,
     private dialog: MatDialog
-  ) {}
+  ) {this.loaderService.isLoading.next(true);}
 
   ngOnInit(): void {
     this.route.params
       .subscribe(params => {
         if(params.id) {
-          this.getBookById(params.id)
+          this.getBookById(params.id);
         }
       });
   }
@@ -49,6 +51,7 @@ export class BookDetailComponent implements OnInit {
         if(data.status == 'BORROWED') this.getCheckoutByBookId(data.id);
         /* https://stackoverflow.com/a/44904470 */
         this.isDataLoaded = Promise.resolve(true);
+        this.loaderService.isLoading.next(false);
       }, () => this.router.navigate(['books']));
   }
 

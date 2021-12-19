@@ -2,6 +2,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Component, OnInit} from "@angular/core";
 import {CheckoutService} from "../../services/checkout.service";
 import {Checkout} from "../../models/checkout";
+import {LoaderService} from "../../services/loader.service";
 
 @Component({
   selector: 'app-checkout-detail',
@@ -13,10 +14,11 @@ export class CheckoutDetailComponent implements OnInit {
   checkoutStatus: CheckoutStatus;
 
   constructor(
+    private loaderService: LoaderService,
     private route: ActivatedRoute,
     private router: Router,
     private checkoutService: CheckoutService,
-  ) {}
+  ) {this.loaderService.isLoading.next(true);}
 
   ngOnInit(): void {
     this.route.params
@@ -40,6 +42,7 @@ export class CheckoutDetailComponent implements OnInit {
         }
         /* https://stackoverflow.com/a/44904470 */
         this.isDataLoaded = Promise.resolve(true);
+        this.loaderService.isLoading.next(false);
       }, () => this.router.navigate(['checkouts']));
   }
 
