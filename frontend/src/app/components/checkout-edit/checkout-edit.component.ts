@@ -64,7 +64,7 @@ export class CheckoutEditComponent implements OnInit {
   }
 
   updateCheckout(): void {
-    this.checkoutService.saveCheckout(this.checkout).subscribe(() => {});
+    this.checkoutService.saveCheckout(this.checkout).subscribe(() => this.router.navigate(['checkouts', this.checkout.id]));
   }
 
   toBookDetails(): void {

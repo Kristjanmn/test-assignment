@@ -86,7 +86,10 @@ export class BookDetailComponent implements OnInit {
 
   returnBook(): void {
     this.bookService.returnBook(this.book)
-      .subscribe(() => this.router.navigate(['books']));
+      .subscribe(() => {
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+          this.router.navigate(['books', this.book.id]));
+      });
   }
 
   toBookEditing(): void {
