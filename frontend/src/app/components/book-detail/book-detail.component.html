@@ -17,6 +17,6 @@
     <button mat-raised-button color="accent" [disabled]="book.status != 'BORROWED'" style="margin: 5px" (click)="openReturnDialog()">Return</button>
     <button mat-raised-button class="favorite" style="margin: 5px" (click)="favorite()"><label [hidden]="!isFavorite">Remove favorite </label><mat-icon [hidden]="!isFavorite">favorite</mat-icon><label [hidden]="isFavorite">Add favorite </label><mat-icon [hidden]="isFavorite">favorite_border</mat-icon></button>
     <button mat-raised-button color="accent" style="float: right; margin: 5px;" (click)="toBookEditing()">Edit</button>
-    <button mat-raised-button color="warn" style="float: right; margin: 5px;" (click)="openDeleteDialog()">Delete</button>
+    <button mat-raised-button color="warn" [disabled]="book.status == 'BORROWED'" style="float: right; margin: 5px;" (click)="openDeleteDialog()">Delete</button>
   </mat-card>
 </div>
