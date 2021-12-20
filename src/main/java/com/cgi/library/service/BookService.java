@@ -111,6 +111,7 @@ public class BookService {
         ModelMapper modelMapper = ModelMapperFactory.getMapper();
         // Book
         bookDTO.setStatus(BookStatus.RETURNED);
+        bookDTO.setStatus(BookStatus.AVAILABLE);        // "not a bug" bugfix
         bookDTO.setDueDate(null);
         saveBook(bookDTO);
         // Checkout
